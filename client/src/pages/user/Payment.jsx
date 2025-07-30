@@ -1,37 +1,27 @@
-import React, { useState, useEffect, useMemo } from "react"
+import React, { useCallback } from "react"
 import { loadStripe } from "@stripe/stripe-js"
 import { CheckoutProvider } from "@stripe/react-stripe-js"
-import { payment } from "../../api/stripe"
 import useEcomStore from "../../store/ecom-store"
+import { payment } from "../../api/stripe"
 import CheckoutForm from "../../components/CheckoutForm"
+
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK)
 
 const Payment = () => {
   const token = useEcomStore((s) => s.token)
-  const [clientSecret, setClientSecret] = useState("")
 
-  useEffect(() => {
-    payment(token)
-      .then((res) => {
-        console.log(res)
-        setClientSecret(res.data.clientSecret)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }, [])
+  const fetchClientSecret = useCallback(async () => {
+    const res = await payment(token)
+    return res.data.clientSecret
+  }, [token])
 
-  const appearance = {
-    theme: "stripe",
-  }
-  // Enable the skeleton loader UI for optimal loading.
-  const loader = "auto"
+  const appearance = { theme: "stripe" }
 
   return (
     <CheckoutProvider
       stripe={stripePromise}
       options={{
-        fetchClientSecret: () => promise,
+        fetchClientSecret,
         elementsOptions: { appearance },
       }}
     >

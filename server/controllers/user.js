@@ -203,8 +203,8 @@ exports.saveOrder = async (req, res) => {
     // stripePaymentId String
     // amount          Int
     // status          String
-    // currentcy       String
-    const { id, amount, status, currency } = req.body.paymentIntent
+    // currency       String
+    const { id, amount, status, currency } = req.body.session
 
     // Step 1 Get User Cart
     const userCart = await prisma.cart.findFirst({
@@ -219,7 +219,6 @@ exports.saveOrder = async (req, res) => {
       return res.status(400).json({ ok: false, message: "Cart is Empty" })
     }
 
-    const amountTHB = Number(amount) / 100
     // Create a new Order
     const order = await prisma.order.create({
       data: {
@@ -235,7 +234,7 @@ exports.saveOrder = async (req, res) => {
         },
         cartTotal: userCart.cartTotal,
         stripePaymentId: id,
-        amount: amountTHB,
+        amount: Number(amount),
         status: status,
         currentcy: currency,
       },
@@ -243,7 +242,7 @@ exports.saveOrder = async (req, res) => {
     // stripePaymentId String
     // amount          Int
     // status          String
-    // currentcy       String
+    // currency       String
 
     // Update Product
     const update = userCart.products.map((item) => ({

@@ -57,7 +57,7 @@ model Order {
   stripePaymentId String
   amount          Int
   status          String
-  currency       String
+  currency        String
 }
 
 model ProductOnOrder {

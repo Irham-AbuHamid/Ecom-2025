@@ -42,12 +42,14 @@ const ListCart = () => {
     await createUserCart(token, { cart })
       .then((res) => {
         console.log("Cart saved successfully:", res)
-        toast.success("บันทึกตะกร้าสินค้าเรียบร้อยแล้ว")
+        toast.success("บันทึกตะกร้าสินค้าเรียบร้อยแล้ว",
+          {position: "top-center"})
         navigate("/checkout")
       })
       .catch((err) => {
         console.error("Error saving cart:", err)
-        toast.error("ไม่สามารถบันทึกตะกร้าสินค้าได้")
+        toast.warning(err.response.data.message)
+        
       })
   }
 
