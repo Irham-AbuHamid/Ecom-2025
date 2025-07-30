@@ -55,6 +55,11 @@ const SidebarAdmin = ({ onClose }) => {
           <Package size={18} />
           <span>Product</span>
         </NavLink>
+
+        <NavLink to="/admin/Orders" className={linkClass} onClick={onClose}>
+          <Package size={18} />
+          <span>Orders</span>
+        </NavLink>
       </nav>
 
       {/* Bottom: Logout */}

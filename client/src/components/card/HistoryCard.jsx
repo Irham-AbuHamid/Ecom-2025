@@ -61,7 +61,10 @@ const HistoryCard = () => {
                   {item.products?.map((product, index) => {
                     console.log(product)
                     return (
-                      <tr className="border-b hover:bg-gray-50">
+                      <tr
+                        key={index}
+                        className="border-b hover:bg-gray-50"
+                      >
                         <td className="p-3">{product.product.title}</td>
                         <td className="p-3 text-right">{product.product.price}</td>
                         <td className="p-3 text-right">{product.count}</td>
