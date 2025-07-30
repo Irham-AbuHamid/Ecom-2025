@@ -1,7 +1,7 @@
 // rafce
 import React from "react"
 import AppRoutes from "./routes/AppRoutes"
-import { ToastContainer, toast } from "react-toastify"
+import { ToastContainer } from "react-toastify"
 
 const App = () => {
   return (

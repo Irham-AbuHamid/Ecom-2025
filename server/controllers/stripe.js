@@ -26,21 +26,16 @@ exports.payment = async (req, res) => {
     }
 
     const line_items = cart.cartItems.map((item) => ({
-      price: item.product.stripePriceId, // ✅ ต้องมีใน DB
+      price: item.product.stripePriceId,
       quantity: item.quantity,
     }))
 
     const session = await stripe.checkout.sessions.create({
-      ui_mode: "custom", // สำหรับ custom UI
-      line_items: [
-        {
-          price: "price_1RqDJ2K3Pho1ZtzQyypml0M1",
-          quantity: 1,
-        },
-      ],
+      // Use the mapped line_items from the cart
+      line_items: line_items,
       mode: "payment",
-      return_url:
-        "http://localhost:3000/complete?session_id={CHECKOUT_SESSION_ID}",
+      success_url: `${YOUR_DOMAIN}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${YOUR_DOMAIN}/cancel`,
     })
 
     res.json({ sessionId: session.id, clientSecret: session.client_secret })
