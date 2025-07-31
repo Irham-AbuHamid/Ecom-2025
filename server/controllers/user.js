@@ -116,7 +116,7 @@ exports.userCart = async (req, res) => {
       },
     })
     console.log(newCart)
-    res.send("Cart created successfully")
+    res.send("Add Cart Ok")
   } catch (err) {
     console.log(err)
     res.status(500).json({ message: "Server Error" })
@@ -155,7 +155,7 @@ exports.emptyCart = async (req, res) => {
       where: { orderedById: Number(req.user.id) },
     })
     if (!cart) {
-      return res.status(400).json({ message: "Cart is already empty" })
+      return res.status(400).json({ message: "No cart" })
     }
     await prisma.productOnCart.deleteMany({
       where: { cartId: cart.id },
@@ -166,7 +166,7 @@ exports.emptyCart = async (req, res) => {
 
     console.log(result)
     res.json({
-      message: "Cart is empty",
+      message: "Cart Empty Success",
       deletedCount: result.count,
     })
   } catch (err) {
@@ -188,7 +188,7 @@ exports.saveAddress = async (req, res) => {
       },
     })
 
-    res.json({ ok: true, message: "Address saved successfully" })
+    res.json({ ok: true, message: "Address update success" })
   } catch (err) {
     console.log(err)
     res.status(500).json({ message: "Server Error" })
@@ -204,7 +204,7 @@ exports.saveOrder = async (req, res) => {
     // amount          Int
     // status          String
     // currency       String
-    const { id, amount, status, currency } = req.body.session
+    const { id, amount, status, currency } = req.body.paymentIntent
 
     // Step 1 Get User Cart
     const userCart = await prisma.cart.findFirst({
@@ -219,6 +219,7 @@ exports.saveOrder = async (req, res) => {
       return res.status(400).json({ ok: false, message: "Cart is Empty" })
     }
 
+    const amountTHB = Number(amount) / 100
     // Create a new Order
     const order = await prisma.order.create({
       data: {
@@ -234,9 +235,9 @@ exports.saveOrder = async (req, res) => {
         },
         cartTotal: userCart.cartTotal,
         stripePaymentId: id,
-        amount: Number(amount),
+        amount: amountTHB,
         status: status,
-        currentcy: currency,
+        currency: currency,
       },
     })
     // stripePaymentId String

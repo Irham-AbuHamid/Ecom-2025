@@ -72,6 +72,7 @@ const ecomStore = (set, get) => ({
       console.log(err)
     }
   },
+  clearCart: () => set({ carts: [] }),
 })
 
 const usePersist = {

@@ -38,7 +38,8 @@ export default function CheckoutForm() {
       console.log("error")
       toast.error(payload.error.message)
     } else if (payload.paymentIntent.status === "succeeded") {
-      console.log("Ready or Saveorder")
+      console.log("Order Saved")
+      toast.success("Order Saved")
       // Create Order
       saveOrder(token, payload)
         .then((res) => {

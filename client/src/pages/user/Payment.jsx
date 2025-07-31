@@ -31,6 +31,7 @@ const Payment = () => {
     <div>
       {clientSecret && (
         <Elements
+          key={clientSecret}
           options={{ clientSecret, appearance, loader }}
           stripe={stripePromise}
         >
