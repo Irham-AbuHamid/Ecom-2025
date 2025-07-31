@@ -5,6 +5,6 @@ const { payment } = require("../controllers/stripe")
 const router = express.Router()
 // import controller
 
-router.post("/user/create-checkout-session", authCheck, payment)
+router.post("/user/secret", authCheck, payment)
 
 module.exports = router

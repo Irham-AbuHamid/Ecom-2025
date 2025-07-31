@@ -4,8 +4,6 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2025-06-30.basil",
 })
 
-const YOUR_DOMAIN = "http://localhost:3000"
-
 exports.payment = async (req, res) => {
   try {
     const cart = await prisma.cart.findFirst({
@@ -30,15 +28,15 @@ exports.payment = async (req, res) => {
       quantity: item.quantity,
     }))
 
-    const session = await stripe.checkout.sessions.create({
-      // Use the mapped line_items from the cart
-      line_items: line_items,
-      mode: "payment",
-      success_url: `${YOUR_DOMAIN}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${YOUR_DOMAIN}/cancel`,
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: 1099,
+      currency: "thb",
+      automatic_payment_methods: {
+        enabled: true,
+      },
     })
 
-    res.json({ sessionId: session.id, clientSecret: session.client_secret })
+    res.json({ clientSecret: paymentIntent.client_secret })
   } catch (err) {
     console.error("Stripe error:", err)
     res.status(500).json({ message: err.message })

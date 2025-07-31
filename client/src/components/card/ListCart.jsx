@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react"
 import { Trash2, Minus, Plus, ListCheck } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Link,useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import useEcomStore from "../../store/ecom-store"
 import { numberFormat } from "../../utils/number"
 import { toast } from "react-toastify"
@@ -36,20 +36,19 @@ const ListCart = () => {
     }
   }, [])
 
-
   const navigate = useNavigate()
   const handleSaveCart = async () => {
     await createUserCart(token, { cart })
       .then((res) => {
         console.log("Cart saved successfully:", res)
-        toast.success("บันทึกตะกร้าสินค้าเรียบร้อยแล้ว",
-          {position: "top-center"})
+        toast.success("บันทึกตะกร้าสินค้าเรียบร้อยแล้ว", {
+          position: "top-center",
+        })
         navigate("/checkout")
       })
       .catch((err) => {
         console.error("Error saving cart:", err)
         toast.warning(err.response.data.message)
-        
       })
   }
 
@@ -203,8 +202,9 @@ const ListCart = () => {
               </div>
 
               {user ? (
-                <Link to="/">
+                <Link>
                   <button
+                    disabled={cart.length < 1}
                     onClick={handleSaveCart}
                     className="mt-1 w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold shadow-md transition"
                   >
@@ -229,12 +229,24 @@ const ListCart = () => {
 
           {!isBottomVisible && (
             <div className="fixed bottom-0 left-0 right-0 bg-white shadow-md px-4 py-3 z-50 sm:hidden">
-              <button
-                onClick={handleSaveCart}
-                className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold transition"
-              >
-                ดำเนินการชำระเงิน
-              </button>
+              {user ? (
+                <Link>
+                  <button
+                    disabled={cart.length < 1}
+                    onClick={handleSaveCart}
+                    className="mt-1 w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold shadow-md transition"
+                  >
+                    ดำเนินการชำระเงิน
+                  </button>
+                </Link>
+              ) : (
+                <Link to="/login">
+                  <button className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold shadow-md transition">
+                    Login
+                  </button>
+                </Link>
+              )}
+
               <Link to="/shop">
                 <button className="mt-2 w-full bg-gray-600 hover:bg-gray-700 text-white py-3 rounded-xl font-semibold transition">
                   แก้ไขรายการสินค้า
