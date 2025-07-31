@@ -188,7 +188,7 @@ const FormProduct = () => {
               <th className="py-2 px-4 border">ชื่อสินค้า</th>
               <th className="py-2 px-4 border">รายละเอียด</th>
               <th className="py-2 px-4 border">ราคา</th>
-              <th className="py-2 px-4 border">จำนวน</th>
+              <th className="py-2 px-4 border">จำนวนคงเหลือ</th>
               <th className="py-2 px-4 border">ขายแล้ว</th>
               <th className="py-2 px-4 border">อัปเดตล่าสุด</th>
               <th className="py-2 px-4 border">จัดการ</th>

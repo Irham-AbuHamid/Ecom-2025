@@ -34,24 +34,23 @@ const CartCard = () => {
         🛒 ตะกร้าสินค้า
       </h1>
 
-
       <div className="border border-gray-200 bg-white p-4 rounded-xl shadow-lg">
         {carts.length === 0 ? (
           <p className="text-center text-gray-400">ยังไม่มีสินค้าในตะกร้า</p>
         ) : (
           <>
-      <div className="flex justify-end mb-4">
-        <button
-          onClick={() => {
-            actionClearCart()
-            toast.warn("ลบสินค้าทั้งหมดแล้ว")
-          }}
-          className="flex items-center gap-1 text-sm text-red-600 hover:text-red-800 hover:underline"
-        >
-          <Trash2 size={18} />
-          ลบสินค้าทั้งหมด
-        </button>
-      </div>
+            <div className="flex justify-end mb-4">
+              <button
+                onClick={() => {
+                  actionClearCart()
+                  toast.warn("ลบสินค้าทั้งหมดแล้ว")
+                }}
+                className="flex items-center gap-1 text-sm text-red-600 hover:text-red-800 hover:underline"
+              >
+                <Trash2 size={18} />
+                ลบสินค้าทั้งหมด
+              </button>
+            </div>
             <AnimatePresence>
               {carts.map((item) => (
                 <motion.div
