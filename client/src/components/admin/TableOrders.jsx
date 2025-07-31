@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import useEcomStore from "./../../store/ecom-store"
-import { getOrdersAdmin } from "./../../api/admin"
+import { getOrdersAdmin, changOrderStatus } from "./../../api/admin"
+import { toast } from "react-toastify"
 
 const TableOrders = () => {
   const token = useEcomStore((state) => state.token)
@@ -18,6 +19,32 @@ const TableOrders = () => {
       .catch((err) => {
         console.log(err)
       })
+  }
+
+  const handleChangeOderStatus = (token, oderId, orderStatus) => {
+    console.log(oderId, orderStatus)
+    changOrderStatus(token, oderId, orderStatus)
+      .then((res) => {
+        console.log(res)
+        toast.success("อัพเดทสถานะเรียบร้อยแล้ว")
+        handleGetOrder(token)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "จัดส่งแล้ว":
+        return "bg-green-200"
+      case "กำลังจัดส่ง":
+        return "bg-yellow-200"
+      case "กำลังดำเนินการ":
+        return "bg-blue-200"
+      case "ยกเลิก":
+        return "bg-red-200"
+    }
   }
 
   return (
@@ -60,8 +87,24 @@ const TableOrders = () => {
                   </td>
 
                   <td>{item.cartTotal}</td>
-                  <td>{item.orderStatus}</td>
-                  <td>Action</td>
+
+                  <td className={`${getStatusColor(item.orderStatus)}`}>
+                    <span>{item.orderStatus}</span>
+                  </td>
+
+                  <td>
+                    <select
+                      value={item.orderStatus}
+                      onChange={(e) =>
+                        handleChangeOderStatus(token, item.id, e.target.value)
+                      }
+                    >
+                      <option>จัดส่งแล้ว</option>
+                      <option>กำลังจัดส่ง</option>
+                      <option>กำลังดำเนินการ</option>
+                      <option>ยกเลิก</option>
+                    </select>
+                  </td>
                 </tr>
               )
             })}
