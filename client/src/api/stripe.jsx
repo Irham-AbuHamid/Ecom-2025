@@ -2,7 +2,7 @@ import axios from "axios"
 
 export const payment = async (token) =>
   await axios.post(
-    "http://localhost:3000/api/user/secret",
+    `${import.meta.env.VITE_API_URL}/api/user/create-checkout-session`,
     {},
     {
       headers: {
@@ -10,4 +10,3 @@ export const payment = async (token) =>
       },
     }
   )
-

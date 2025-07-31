@@ -1,106 +1,87 @@
 import React, { useState } from "react"
-import { PaymentElement, useCheckout } from "@stripe/react-stripe-js"
+import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js"
+import "../stripe.css"
+import { saveOrder } from "../api/user"
+import useEcomStore from "../store/ecom-store"
+import { toast } from "react-toastify"
+import { useNavigate } from "react-router-dom"
 
-const validateEmail = async (email, checkout) => {
-  const updateResult = await checkout.updateEmail(email)
-  const isValid = updateResult.type !== "error"
+export default function CheckoutForm() {
+  const token = useEcomStore((state) => state.token)
+  const clearCart = useEcomStore((state) => state.clearCart)
 
-  return { isValid, message: !isValid ? updateResult.error.message : null }
-}
+  const navigate = useNavigate()
 
-const EmailInput = ({ email, setEmail, error, setError }) => {
-  const checkout = useCheckout()
+  const stripe = useStripe()
+  const elements = useElements()
 
-  const handleBlur = async () => {
-    if (!email) {
-      return
-    }
-
-    const { isValid, message } = await validateEmail(email, checkout)
-    if (!isValid) {
-      setError(message)
-    }
-  }
-
-  const handleChange = (e) => {
-    setError(null)
-    setEmail(e.target.value)
-  }
-
-  return (
-    <>
-      <label>
-        Email
-        <input
-          id="email"
-          type="text"
-          value={email}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          className={error ? "error" : ""}
-        />
-      </label>
-      {error && <div id="email-errors">{error}</div>}
-    </>
-  )
-}
-
-const CheckoutForm = () => {
-  const checkout = useCheckout()
-
-  const [email, setEmail] = useState("")
-  const [emailError, setEmailError] = useState(null)
   const [message, setMessage] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    setIsLoading(true)
-
-    const { isValid, message } = await validateEmail(email, checkout)
-    if (!isValid) {
-      setEmailError(message)
-      setMessage(message)
-      setIsLoading(false)
+    if (!stripe || !elements) {
       return
     }
 
-    const confirmResult = await checkout.confirm()
+    setIsLoading(true)
 
-    // This point will only be reached if there is an immediate error when
-    // confirming the payment. Otherwise, your customer will be redirected to
-    // your `return_url`. For some payment methods like iDEAL, your customer will
-    // be redirected to an intermediate site first to authorize the payment, then
-    // redirected to the `return_url`.
-    if (confirmResult.type === "error") {
-      setMessage(confirmResult.error.message)
+    const payload = await stripe.confirmPayment({
+      elements,
+      redirect: "if_required",
+    })
+
+    console.log("payload", payload)
+    if (payload.error) {
+      setMessage(payload.error.message)
+      console.log("error")
+      toast.error(payload.error.message)
+    } else if (payload.paymentIntent.status === "succeeded") {
+      console.log("Ready or Saveorder")
+      // Create Order
+      saveOrder(token, payload)
+        .then((res) => {
+          console.log(res)
+          clearCart()
+          toast.success("Payment Success!!!")
+          navigate("/user/history")
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    } else {
+      console.log("Something wrong!!!")
+      toast.warning("ชำระเงินไม่สำเร็จ")
     }
 
     setIsLoading(false)
   }
 
+  const paymentElementOptions = {
+    layout: "tabs",
+  }
+
   return (
-    <form onSubmit={handleSubmit}>
-      <EmailInput
-        email={email}
-        setEmail={setEmail}
-        error={emailError}
-        setError={setEmailError}
-      />
-      <h4>Payment</h4>
-      <PaymentElement id="payment-element" />
-      <button disabled={isLoading} id="submit">
-        {isLoading ? (
-          <div className="spinner"></div>
-        ) : (
-          `Pay ${checkout.total.total.amount} now`
-        )}
-      </button>
-      {/* Show any error or success messages */}
-      {message && <div id="payment-message">{message}</div>}
-    </form>
+    <>
+      <form className="space-y-6" id="payment-form" onSubmit={handleSubmit}>
+        <PaymentElement id="payment-element" options={paymentElementOptions} />
+        <button
+          className="stripe-button"
+          disabled={isLoading || !stripe || !elements}
+          id="submit"
+        >
+          <span id="button-text">
+            {isLoading ? (
+              <div className="spinner" id="spinner"></div>
+            ) : (
+              "Pay now"
+            )}
+          </span>
+        </button>
+        {/* Show any error or success messages */}
+        {message && <div id="payment-message">{message}</div>}
+      </form>
+    </>
   )
 }
-
-export default CheckoutForm

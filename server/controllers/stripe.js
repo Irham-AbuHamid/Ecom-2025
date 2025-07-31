@@ -1,44 +1,34 @@
-// ✅ server/controllers/stripe.js
 const prisma = require("../config/prisma")
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2025-06-30.basil",
-})
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
 
 exports.payment = async (req, res) => {
   try {
+    //code
+    // Check user
+    // req.user.id
+
     const cart = await prisma.cart.findFirst({
       where: {
         orderedById: req.user.id,
       },
-      include: {
-        cartItems: {
-          include: {
-            product: true,
-          },
-        },
-      },
     })
+    const amountTHB = cart.cartTotal * 100
 
-    if (!cart || cart.cartItems.length === 0) {
-      return res.status(400).json({ message: "Cart is empty" })
-    }
-
-    const line_items = cart.cartItems.map((item) => ({
-      price: item.product.stripePriceId,
-      quantity: item.quantity,
-    }))
-
+    // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: 1099,
+      amount: amountTHB,
       currency: "thb",
+      // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
       automatic_payment_methods: {
         enabled: true,
       },
     })
 
-    res.json({ clientSecret: paymentIntent.client_secret })
+    res.send({
+      clientSecret: paymentIntent.client_secret,
+    })
   } catch (err) {
-    console.error("Stripe error:", err)
-    res.status(500).json({ message: err.message })
+    console.log(err)
+    res.status(500).json({ message: "Server Error" })
   }
 }
