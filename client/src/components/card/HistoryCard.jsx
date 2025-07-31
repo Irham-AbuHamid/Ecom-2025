@@ -13,7 +13,6 @@ const HistoryCard = () => {
   const hdlGetOrders = (token) => {
     getOrders(token)
       .then((res) => {
-        console.log(res)
         setOrders(res.data.orders)
       })
       .catch((err) => {
@@ -22,26 +21,26 @@ const HistoryCard = () => {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">
+    <div className="max-w-4xl mx-auto p-4 sm:p-6">
+      <h1 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-6 text-center">
         ประวัติการสั่งซื้อ
       </h1>
 
       {orders.length === 0 ? (
-        <p className="text-gray-500 text-center mt-8">
+        <p className="text-gray-500 text-center mt-12 text-sm sm:text-base">
           ยังไม่มีประวัติการสั่งซื้อ
         </p>
       ) : (
         orders.map((item, index) => (
           <div
             key={index}
-            className="bg-white rounded-lg shadow-md p-6 space-y-6 border border-gray-200 mb-6"
+            className="bg-white rounded-xl shadow-sm p-5 sm:p-6 border border-gray-100 mb-6 transition hover:shadow-md"
           >
             {/* Header */}
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 sm:gap-0 mb-4">
               <div>
-                <p className="text-sm text-gray-500">วันที่สั่งซื้อ</p>
-                <p className="font-medium text-gray-800">
+                <p className="text-sm text-gray-400">วันที่สั่งซื้อ</p>
+                <p className="text-xs text-gray-800">
                   {new Date(item.updatedAt).toLocaleDateString("th-TH", {
                     year: "numeric",
                     month: "long",
@@ -49,34 +48,42 @@ const HistoryCard = () => {
                   })}
                 </p>
               </div>
-              <div className="text-sm px-3 py-1 rounded-full bg-green-100 text-green-700 font-medium">
+              {/* orderStatus */}
+              <div className="text-xs sm:text-sm px-3 py-1 rounded-full bg-green-50 text-green-600 border border-green-200 font-medium w-fit">
                 {item.orderStatus}
               </div>
             </div>
 
-            {/* Product Table */}
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm text-left border-collapse">
-                <thead>
-                  <tr className="bg-gray-100 text-gray-600 uppercase text-xs">
-                    <th className="p-3">สินค้า</th>
-                    <th className="p-3 text-right">ราคา</th>
-                    <th className="p-3 text-right">จำนวน</th>
-                    <th className="p-3 text-right">รวม</th>
+            {/* Table */}
+            <div className="overflow-x-auto rounded-lg border border-gray-200">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-gray-50 text-gray-500 uppercase text-xs">
+                  <tr>
+                    <th className="p-4 whitespace-nowrap">สินค้า</th>
+                    <th className="p-3 text-center whitespace-nowrap">ราคา</th>
+                    <th className="p-3 text-center whitespace-nowrap">จำนวน</th>
+                    <th className="p-3 text-center whitespace-nowrap">รวม</th>
                   </tr>
                 </thead>
                 <tbody>
                   {item.products?.map((product, idx) => (
-                    <tr key={idx} className="border-b hover:bg-gray-50">
+                    <tr
+                      key={idx}
+                      className=" text-gray-700 hover:bg-gray-50 transition"
+                    >
+                      {/* สินค้า */}
                       <td className="p-3">{product.product.title}</td>
-                      <td className="p-3 text-right">
+                      {/* ราคา */}
+                      <td className="p-3 text-center">
                         {product.product.price.toLocaleString("th-TH", {
                           style: "currency",
                           currency: "THB",
                         })}
                       </td>
-                      <td className="p-3 text-right">{product.count}</td>
-                      <td className="p-3 text-right">
+                      {/* จำนวน */}
+                      <td className="p-3 text-center">{product.count}</td>
+                      {/* รวม */}
+                      <td className="p-3 text-center">
                         {(product.count * product.product.price).toLocaleString(
                           "th-TH",
                           {
@@ -92,10 +99,10 @@ const HistoryCard = () => {
             </div>
 
             {/* Total */}
-            <div className="flex justify-end">
+            <div className="flex justify-end mt-4">
               <div className="text-right">
-                <p className="text-sm text-gray-500">ราคาสุทธิ</p>
-                <p className="text-xl font-semibold text-gray-800">
+                <p className="text-gray-400">ราคาสุทธิ</p>
+                <p className="text-lg font-semibold text-gray-800">
                   {item.cartTotal.toLocaleString("th-TH", {
                     style: "currency",
                     currency: "THB",
