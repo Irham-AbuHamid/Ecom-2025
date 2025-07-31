@@ -74,7 +74,7 @@ exports.userCart = async (req, res) => {
       if (!product || item.count > product.quantity) {
         return res.status(400).json({
           ok: false,
-          message: `ขออภัย. สินค้า ${product?.title || "product"} หมด`,
+          message: `ขออภัย. สินค้า ${product?.title || "product"} ไม่เพียงพอ`,
         })
       }
     }
