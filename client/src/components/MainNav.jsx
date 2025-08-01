@@ -1,15 +1,14 @@
 import React, { useState } from "react"
-import { Link } from "react-router-dom"
-import { Menu, X } from "lucide-react"
+import { Link, NavLink } from "react-router-dom"
+import { Menu, X, ShoppingCart } from "lucide-react"
 import useEcomStore from "./../store/ecom-store"
-import { ShoppingCart } from "lucide-react"
 
 const MainNav = () => {
   const carts = useEcomStore((state) => state.carts)
   const [open, setOpen] = useState(false)
-
-  // คำนวณจำนวนรวมสินค้าในตะกร้า
   const totalCart = carts.length
+
+  const menuItems = ["Home", "Shop", "Cart", "Register", "Login"]
 
   return (
     <nav className="bg-gradient-to-r from-emerald-600 to-green-500 backdrop-blur-lg shadow-lg sticky top-0 z-50">
@@ -25,16 +24,23 @@ const MainNav = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
-            {["Home", "Shop", "Cart", "Register", "Login"].map((item) => {
+            {menuItems.map((item) => {
               const path =
                 "/" + (item.toLowerCase() === "home" ? "" : item.toLowerCase())
               const isCart = item === "Cart"
 
               return (
-                <Link
+                <NavLink
                   key={item}
                   to={path}
-                  className="relative text-white text-lg transition duration-300 justify-center flex items-center rounded-md hover:text-green-800"
+                  className={({ isActive }) =>
+                    [
+                      "relative flex items-center justify-center text-lg transition duration-300 rounded-md",
+                      isActive
+                        ? "bg-white text-green-600 font-semibold px-3 py-2"
+                        : "text-white hover:text-yellow-300",
+                    ].join(" ")
+                  }
                 >
                   {item}
                   {isCart && totalCart > 0 && (
@@ -42,7 +48,7 @@ const MainNav = () => {
                       {totalCart}
                     </span>
                   )}
-                </Link>
+                </NavLink>
               )
             })}
           </div>
@@ -51,7 +57,8 @@ const MainNav = () => {
           <div className="md:hidden">
             <button
               onClick={() => setOpen(!open)}
-              className="relative text-white text-lg transition duration-300 justify-center flex items-center py-2 rounded-md hover:text-green-600"
+              aria-label="Toggle menu"
+              className="text-white hover:text-yellow-300 transition"
             >
               {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -65,28 +72,35 @@ const MainNav = () => {
           open ? "max-h-96 py-4 px-6 space-y-3" : "max-h-0"
         }`}
       >
-        {["Home", "Shop", "Cart", "Register", "Login"].map((item) => {
+        {menuItems.map((item) => {
           const path =
             "/" + (item.toLowerCase() === "home" ? "" : item.toLowerCase())
           const isCart = item === "Cart"
 
           return (
-            <Link
+            <NavLink
               key={item}
               to={path}
               onClick={() => setOpen(false)}
-              className="relative text-white text-lg transition duration-300 justify-center flex items-center py-2 rounded-md hover:bg-white hover:text-green-600"
+              className={({ isActive }) =>
+                [
+                  "relative flex items-center justify-center text-lg transition duration-300 py-2 rounded-md",
+                  isActive
+                    ? "bg-white text-green-600 font-semibold"
+                    : "text-white hover:bg-white hover:text-green-600",
+                ].join(" ")
+              }
             >
               {item}
               {isCart && totalCart > 0 && (
-                <button className="relative ml-2 p-2 bg-green-600 hover:bg-green-700 text-white rounded-full shadow-md transition">
+                <span className="ml-2 relative bg-green-600 hover:bg-green-700 text-white rounded-full p-2 shadow-md transition">
                   <ShoppingCart size={15} />
                   <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full animate-pulse shadow-md">
                     {totalCart}
                   </span>
-                </button>
+                </span>
               )}
-            </Link>
+            </NavLink>
           )
         })}
       </div>
