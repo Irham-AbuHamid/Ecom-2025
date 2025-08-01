@@ -3,6 +3,7 @@ import { ShoppingCart, Trash2, Check } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { toast } from "react-toastify"
 import useEcomStore from "../../store/ecom-store"
+import { numberFormat } from "../../utils/number"
 
 const ProductCard = ({ item }) => {
   const actionAddToCart = useEcomStore((s) => s.actionAddToCart)
@@ -58,7 +59,7 @@ const ProductCard = ({ item }) => {
         {/* ราคา + ปุ่ม */}
         <div className="mt-4 flex justify-between items-center">
           <span className="text-green-600 font-bold text-lg">
-            {item.price.toLocaleString()} ฿
+            {numberFormat(item.price)} ฿
           </span>
 
           {inCart ? (

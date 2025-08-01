@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import useEcomStore from "./../../store/ecom-store"
 import { getOrdersAdmin, changOrderStatus } from "./../../api/admin"
 import { toast } from "react-toastify"
+import { numberFormat } from "../../utils/number"
 
 const TableOrders = () => {
   const token = useEcomStore((state) => state.token)
@@ -62,6 +63,7 @@ const TableOrders = () => {
             <tr>
               <th className="text-center px-4 py-3">ลำดับ</th>
               <th className="text-center px-4 py-3">ผู้ใช้งาน</th>
+              <th className="text-center px-4 py-3">วันที่</th>
               <th className="text-center px-4 py-3">สินค้า</th>
               <th className="text-center px-4 py-3">รวม</th>
               <th className="text-center px-4 py-3">สถานะ</th>
@@ -75,7 +77,7 @@ const TableOrders = () => {
                 key={index}
                 className="border-t hover:bg-gray-50 transition duration-150"
               >
-                <td className="text-center px-4 py-3 font-medium">
+                <td className="text-center px-4 py-3">
                   {index + 1}
                 </td>
 
@@ -88,26 +90,23 @@ const TableOrders = () => {
                   </p>
                 </td>
 
+                <td className="text-center px-4 py-3">
+                  {item.createdAt}
+                </td>
+
                 <td className="px-4 py-3 space-y-2">
                   {item.products?.map((product, i) => (
                     <div key={i} className="text-sm">
                       <p className="font-medium">{product.product.title}</p>
                       <span className="text-gray-500 text-xs">
-                        {product.count} ×{" "}
-                        {product.product.price.toLocaleString("th-TH", {
-                          style: "currency",
-                          currency: "THB",
-                        })}
+                        {product.count} × {numberFormat(product.product.price)} ฿
                       </span>
                     </div>
                   ))}
                 </td>
 
                 <td className="text-center px-4 py-3 text-gray-700 font-semibold">
-                  {item.cartTotal.toLocaleString("th-TH", {
-                    style: "currency",
-                    currency: "THB",
-                  })}
+                  {numberFormat(item.cartTotal)} ฿
                 </td>
 
                 <td className="text-center px-4 py-3">

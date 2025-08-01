@@ -4,6 +4,7 @@ import { createProduct, deleteProduct } from "../../api/product"
 import { toast } from "react-toastify"
 import UploadFile from "./UploadFile"
 import { Link } from "react-router-dom"
+import { numberFormat } from "../../utils/number"
 
 const initialState = {
   title: "",
@@ -214,15 +215,13 @@ const FormProduct = () => {
                   </td>
                   <td className="py-2 px-4 border">{item.title}</td>
                   <td className="py-2 px-4 border">{item.description}</td>
-                  <td className="py-2 px-4 border">
-                    {item.price.toLocaleString()}
-                  </td>
+                  <td className="py-2 px-4 border">{numberFormat(item.price)}</td>
                   <td className="py-2 px-4 border text-center">
                     {item.quantity}
                   </td>
                   <td className="py-2 px-4 border text-center">{item.sold}</td>
                   <td className="py-2 px-4 border text-sm text-gray-600">
-                    {new Date(item.updatedAt).toLocaleString("th-TH")}
+                    {item.updatedAt}
                   </td>
                   <td>
                     <div className="flex flex-col md:flex-row items-center gap-2 md:gap-3 mt-2">

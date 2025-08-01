@@ -3,6 +3,7 @@ import { motion } from "framer-motion"
 import useEcomStore from "../../store/ecom-store"
 import Slider from "rc-slider"
 import "rc-slider/assets/index.css"
+import { numberFormat } from "../../utils/number"
 
 const SearchCard = () => {
   const getProduct = useEcomStore((state) => state.getProduct)
@@ -132,8 +133,8 @@ const SearchCard = () => {
           💸 ค้นหาตามราคา
         </h3>
         <div className="flex justify-between text-sm text-gray-500 mb-2">
-          <span>฿{price[0].toLocaleString()}</span>
-          <span>฿{price[1].toLocaleString()}</span>
+          <span>ต่ำสุด : {numberFormat(price[0])} ฿</span>
+          <span>สูงสุด : {numberFormat(price[1])} ฿</span>
         </div>
         <Slider
           onChange={handlePrice}
