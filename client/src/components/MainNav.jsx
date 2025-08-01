@@ -37,8 +37,8 @@ const MainNav = () => {
                     [
                       "relative flex items-center justify-center text-lg transition duration-300 rounded-md",
                       isActive
-                        ? "bg-white text-green-600 font-semibold px-3 py-2"
-                        : "text-white hover:text-yellow-300",
+                        ? "text-green-600 px-3 py-2 bg-white font-semibold "
+                        : "text-white px-3 py-2 hover:text-green-600 hover:bg-gray-200",
                     ].join(" ")
                   }
                 >
