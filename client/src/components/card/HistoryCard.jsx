@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { getOrders } from "./../../api/user"
 import useEcomStore from "../../store/ecom-store"
+import { numberFormat } from "../../utils/number"
+import { dateFormat } from "../../utils/dateFormat"
 
 const HistoryCard = () => {
   const token = useEcomStore((state) => state.token)
@@ -18,6 +20,23 @@ const HistoryCard = () => {
       .catch((err) => {
         console.log(err)
       })
+  }
+
+  const getStatusBadge = (status) => {
+    const base =
+      "text-xs font-medium px-3 py-1 rounded-full border w-fit inline-block"
+    switch (status) {
+      case "จัดส่งแล้ว":
+        return `${base} bg-green-100 text-green-700 border-green-200`
+      case "กำลังจัดส่ง":
+        return `${base} bg-yellow-100 text-yellow-700 border-yellow-200`
+      case "กำลังดำเนินการ":
+        return `${base} bg-blue-100 text-blue-700 border-blue-200`
+      case "ยกเลิก":
+        return `${base} bg-red-100 text-red-700 border-red-200`
+      default:
+        return `${base} bg-gray-100 text-gray-600 border-gray-200`
+    }
   }
 
   return (
@@ -39,25 +58,19 @@ const HistoryCard = () => {
             {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 sm:gap-0 mb-4">
               <div>
-                <p className="text-sm text-gray-400">วันที่สั่งซื้อ</p>
-                <p className="text-xs text-gray-800">
-                  {new Date(item.updatedAt).toLocaleDateString("th-TH", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </p>
+                <p className="text-sm text-gray-600">วันที่สั่งซื้อ</p>
+                <p className="text-sm">{dateFormat(item.updatedAt)}</p>
               </div>
               {/* orderStatus */}
-              <div className="text-xs sm:text-sm px-3 py-1 rounded-full bg-green-50 text-green-600 border border-green-200 font-medium w-fit">
+              <span className={`${getStatusBadge(item.orderStatus)}`}>
                 {item.orderStatus}
-              </div>
+              </span>
             </div>
 
             {/* Table */}
             <div className="overflow-x-auto rounded-lg border border-gray-200">
               <table className="w-full text-sm text-left">
-                <thead className="bg-gray-50 text-gray-500 uppercase text-xs">
+                <thead className="bg-gray-50 text-gray-500 text-xs">
                   <tr>
                     <th className="p-4 whitespace-nowrap">สินค้า</th>
                     <th className="p-3 text-center whitespace-nowrap">ราคา</th>
@@ -75,22 +88,13 @@ const HistoryCard = () => {
                       <td className="p-3">{product.product.title}</td>
                       {/* ราคา */}
                       <td className="p-3 text-center">
-                        {product.product.price.toLocaleString("th-TH", {
-                          style: "currency",
-                          currency: "THB",
-                        })}
+                        ฿{numberFormat(product.product.price)}
                       </td>
                       {/* จำนวน */}
                       <td className="p-3 text-center">{product.count}</td>
                       {/* รวม */}
                       <td className="p-3 text-center">
-                        {(product.count * product.product.price).toLocaleString(
-                          "th-TH",
-                          {
-                            style: "currency",
-                            currency: "THB",
-                          }
-                        )}
+                        ฿{numberFormat(product.count * product.product.price)}
                       </td>
                     </tr>
                   ))}
@@ -103,10 +107,7 @@ const HistoryCard = () => {
               <div className="text-right">
                 <p className="text-gray-400">ราคาสุทธิ</p>
                 <p className="text-lg font-semibold text-gray-800">
-                  {item.cartTotal.toLocaleString("th-TH", {
-                    style: "currency",
-                    currency: "THB",
-                  })}
+                  ฿{numberFormat(item.cartTotal)}
                 </p>
               </div>
             </div>

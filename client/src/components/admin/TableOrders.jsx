@@ -3,6 +3,7 @@ import useEcomStore from "./../../store/ecom-store"
 import { getOrdersAdmin, changOrderStatus } from "./../../api/admin"
 import { toast } from "react-toastify"
 import { numberFormat } from "../../utils/number"
+import { dateFormat } from './../../utils/dateFormat';
 
 const TableOrders = () => {
   const token = useEcomStore((state) => state.token)
@@ -91,7 +92,7 @@ const TableOrders = () => {
                 </td>
 
                 <td className="text-center px-4 py-3">
-                  {item.createdAt}
+                  {dateFormat(item.createdAt)}
                 </td>
 
                 <td className="px-4 py-3 space-y-2">
