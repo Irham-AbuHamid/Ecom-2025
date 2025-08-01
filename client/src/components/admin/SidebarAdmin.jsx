@@ -5,6 +5,7 @@ import {
   Settings,
   Layers,
   Package,
+  ListOrdered,
   LogOut,
   X,
 } from "lucide-react"
@@ -57,7 +58,7 @@ const SidebarAdmin = ({ onClose }) => {
         </NavLink>
 
         <NavLink to="/admin/Orders" className={linkClass} onClick={onClose}>
-          <Package size={18} />
+          <ListOrdered size={20} />
           <span>Orders</span>
         </NavLink>
       </nav>
