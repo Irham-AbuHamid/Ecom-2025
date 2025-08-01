@@ -34,7 +34,6 @@ const ecomStore = (set, get) => ({
       carts: state.carts.filter((item) => item.id !== productId),
     }))
   },
-  actionClearCart: () => set({ carts: [] }),
   getTotalPrice: () => {
     return get().carts.reduce((total, item) => {
       return total + item.price * item.count
