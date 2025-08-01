@@ -14,7 +14,7 @@ const CartCard = () => {
     (state) => state.actionUpdateQuantity
   )
   const actionRemoveProduct = useEcomStore((state) => state.actionRemoveProduct)
-  const actionClearCart = useEcomStore((state) => state.actionClearCart)
+  const clearCart = useEcomStore((state) => state.clearCart)
   const getTotalPrice = useEcomStore((state) => state.getTotalPrice)
 
   const handleQtyChange = (id, newCount, title) => {
@@ -42,7 +42,7 @@ const CartCard = () => {
             <div className="flex justify-end mb-4">
               <button
                 onClick={() => {
-                  actionClearCart()
+                  clearCart()
                   toast.warn("ลบสินค้าทั้งหมดแล้ว")
                 }}
                 className="flex items-center gap-1 text-sm text-red-600 hover:text-red-800 hover:underline"

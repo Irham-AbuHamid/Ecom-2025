@@ -16,7 +16,7 @@ const ListCart = () => {
     (state) => state.actionUpdateQuantity
   )
   const actionRemoveProduct = useEcomStore((state) => state.actionRemoveProduct)
-  const actionClearCart = useEcomStore((state) => state.actionClearCart)
+  const clearCart = useEcomStore((state) => state.clearCart)
   const getTotalPrice = useEcomStore((state) => state.getTotalPrice)
 
   const totalRef = useRef(null)
@@ -65,7 +65,7 @@ const ListCart = () => {
 
   const handleClearCart = () => {
     if (window.confirm("คุณแน่ใจหรือไม่ว่าต้องการลบสินค้าทั้งหมด?")) {
-      actionClearCart()
+      clearCart()
       toast.warn("ลบสินค้าทั้งหมดแล้ว")
     }
   }
@@ -84,8 +84,14 @@ const ListCart = () => {
       </div>
 
       {cart.length === 0 ? (
-        <div className="rounded-xl bg-white shadow-xl p-10 text-center text-gray-500 text-lg">
-          ยังไม่มีสินค้าในตะกร้า
+        <div className="rounded-xl bg-white shadow-xl p-10 text-center text-gray-500 text-lg space-y-4">
+          <p>ยังไม่มีสินค้าในตะกร้า</p>
+          <Link
+            to="/shop"
+            className="inline-block bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2 rounded-lg transition duration-300"
+          >
+            ไปเลือกซื้อสินค้า
+          </Link>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6">
