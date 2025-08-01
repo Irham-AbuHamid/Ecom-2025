@@ -1,14 +1,27 @@
 import React, { useState } from "react"
 import { Link, NavLink } from "react-router-dom"
-import { Menu, X, ShoppingCart } from "lucide-react"
+import { Menu, X, ShoppingCart, User, ChevronDown } from "lucide-react"
 import useEcomStore from "./../store/ecom-store"
 
 const MainNav = () => {
   const carts = useEcomStore((state) => state.carts)
-  const [open, setOpen] = useState(false)
+  const user = useEcomStore((state) => state.user)
+  const logout = useEcomStore((state) => state.logout)
+
+  // console.log(user)
+
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false)
+
   const totalCart = carts.length
 
-  const menuItems = ["Home", "Shop", "Cart", "Register", "Login"]
+  const toggleDropdown = () => {
+    setUserDropdownOpen(!userDropdownOpen)
+  }
+
+  const menuItems = ["Home", "Shop", "Cart"]
+
+  const authItems = !user ? ["Register", "Login"] : []
 
   return (
     <nav className="bg-gradient-to-r from-emerald-600 to-green-500 backdrop-blur-lg shadow-lg sticky top-0 z-50">
@@ -24,7 +37,7 @@ const MainNav = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
-            {menuItems.map((item) => {
+            {[...menuItems, ...authItems].map((item) => {
               const path =
                 "/" + (item.toLowerCase() === "home" ? "" : item.toLowerCase())
               const isCart = item === "Cart"
@@ -44,23 +57,94 @@ const MainNav = () => {
                 >
                   {item}
                   {isCart && totalCart > 0 && (
-                    <span className="absolute -top-2 -right-5 bg-red-600 text-black text-xs font-bold px-2 py-0.5 rounded-full animate-pulse">
+                    <span className="absolute -top-1 -right-2 bg-red-600 text-black text-xs font-bold px-2 py-0.5 rounded-full animate-pulse">
                       {totalCart}
                     </span>
                   )}
                 </NavLink>
               )
             })}
+
+            {/* User Dropdown Desktop */}
+
+            {user && (
+              <div className="relative">
+                <button
+                  onClick={toggleDropdown}
+                  className="flex items-center gap-1 text-white hover:text-yellow-300 transition"
+                >
+                  <User className="w-5 h-5" />
+                  <span>{user.username || "User"}</span>
+                  <ChevronDown />
+                </button>
+                {userDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg py-2 z-50">
+                    <Link
+                      to="/user/history"
+                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                      onClick={() => setUserDropdownOpen(false)}
+                    >
+                      History
+                    </Link>
+                    <button
+                      onClick={() => logout()}
+                      className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
-          {/* Mobile Menu Toggle */}
-          <div className="md:hidden">
+          {/* Mobile Top Right Menu */}
+          <div className="md:hidden flex items-center gap-4">
+            {/* User Dropdown Mobile */}
+            {user && (
+              <div className="relative">
+                <button
+                  onClick={toggleDropdown}
+                  className="flex items-center gap-1 text-white hover:text-yellow-300 transition"
+                >
+                  <User className="w-5 h-5" />
+                  <span className="text-sm">{user.username || "User"}</span>
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+                {userDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg py-2 z-50">
+                    <Link
+                      to="/user/history"
+                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                      onClick={() => setUserDropdownOpen(false)}
+                    >
+                      History
+                    </Link>
+                    <button
+                      onClick={() => {
+                        logout()
+                        setUserDropdownOpen(false)
+                      }}
+                      className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Mobile Menu Toggle Button */}
             <button
-              onClick={() => setOpen(!open)}
+              onClick={() => setMobileOpen(!mobileOpen)}
               aria-label="Toggle menu"
               className="text-white hover:text-yellow-300 transition"
             >
-              {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
         </div>
@@ -69,10 +153,10 @@ const MainNav = () => {
       {/* Mobile Menu */}
       <div
         className={`md:hidden bg-emerald-500 transition-all duration-300 overflow-hidden ${
-          open ? "max-h-96 py-4 px-6 space-y-3" : "max-h-0"
+          mobileOpen ? "max-h-96 py-4 px-6 space-y-3" : "max-h-0"
         }`}
       >
-        {menuItems.map((item) => {
+        {[...menuItems, ...authItems].map((item) => {
           const path =
             "/" + (item.toLowerCase() === "home" ? "" : item.toLowerCase())
           const isCart = item === "Cart"
@@ -81,7 +165,7 @@ const MainNav = () => {
             <NavLink
               key={item}
               to={path}
-              onClick={() => setOpen(false)}
+              onClick={() => setMobileOpen(false)}
               className={({ isActive }) =>
                 [
                   "relative flex items-center justify-center text-lg transition duration-300 py-2 rounded-md",
