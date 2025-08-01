@@ -22,3 +22,11 @@ export const changOrderStatus = async (token, orderId, orderStatus) => {
     }
   )
 }
+
+export const getListAllUser = async (token) => {
+  return await axios.get("http://localhost:3000/api/users", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
