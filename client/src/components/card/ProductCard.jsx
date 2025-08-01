@@ -1,5 +1,5 @@
 import React from "react"
-import { ShoppingCart, Trash2, Check } from "lucide-react"
+import { ShoppingCart, Check } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { toast } from "react-toastify"
 import useEcomStore from "../../store/ecom-store"
