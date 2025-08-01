@@ -35,25 +35,26 @@ export default function CheckoutForm() {
     console.log("payload", payload)
     if (payload.error) {
       setMessage(payload.error.message)
-      console.log("error")
+      console.log(payload.error.message)
       toast.error(payload.error.message)
     } else if (payload.paymentIntent.status === "succeeded") {
-      console.log("Order Saved")
-      toast.success("Order Saved")
+      console.log("Order saved successfully")
+      toast.success("Order saved successfully")
+
       // Create Order
       saveOrder(token, payload)
         .then((res) => {
           console.log(res)
           clearCart()
-          toast.success("Payment Success!!!")
+          toast.success("Payment successful")
           navigate("/user/history")
         })
         .catch((err) => {
           console.log(err)
         })
     } else {
-      console.log("Something wrong!!!")
-      toast.warning("ชำระเงินไม่สำเร็จ")
+      console.warn("Payment failed: Please try again")
+      toast.warning("การชำระเงินไม่สำเร็จ กรุณาลองใหม่อีกครั้ง")
     }
 
     setIsLoading(false)
