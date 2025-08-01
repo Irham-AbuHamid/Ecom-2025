@@ -28,7 +28,7 @@ exports.changeStatus = async (req, res) => {
       data: { enabled: enabled },
     })
 
-    res.send("Update Status Success")
+    res.send("Status updated successfully")
   } catch (err) {
     console.log(err)
     res.status(500).json({ message: "Server Error" })
@@ -44,7 +44,7 @@ exports.changeRole = async (req, res) => {
       data: { role: role },
     })
 
-    res.send("Update Role Success")
+    res.send("Role updated successfully")
   } catch (err) {
     console.log(err)
     res.status(500).json({ message: "Server Error" })
@@ -155,7 +155,7 @@ exports.emptyCart = async (req, res) => {
       where: { orderedById: Number(req.user.id) },
     })
     if (!cart) {
-      return res.status(400).json({ message: "No cart" })
+      return res.status(400).json({ message: "No cart available" })
     }
     await prisma.productOnCart.deleteMany({
       where: { cartId: cart.id },
@@ -166,7 +166,7 @@ exports.emptyCart = async (req, res) => {
 
     console.log(result)
     res.json({
-      message: "Cart Empty Success",
+      message: "Cart has been emptied successfully",
       deletedCount: result.count,
     })
   } catch (err) {
@@ -188,7 +188,7 @@ exports.saveAddress = async (req, res) => {
       },
     })
 
-    res.json({ ok: true, message: "Address update success" })
+    res.json({ ok: true, message: "Address updated successfully" })
   } catch (err) {
     console.log(err)
     res.status(500).json({ message: "Server Error" })
@@ -216,7 +216,7 @@ exports.saveOrder = async (req, res) => {
 
     // Check Cart empty
     if (!userCart || userCart.products.length === 0) {
-      return res.status(400).json({ ok: false, message: "Cart is Empty" })
+      return res.status(400).json({ ok: false, message: "Your cart is empty" })
     }
 
     const amountTHB = Number(amount) / 100
@@ -280,7 +280,7 @@ exports.getOrder = async (req, res) => {
       },
     })
     if (orders.length === 0) {
-      return res.status(400).json({ ok: false, message: "No orders" })
+      return res.status(400).json({ ok: false, message: "No orders found" })
     }
 
     res.json({ ok: true, orders })
