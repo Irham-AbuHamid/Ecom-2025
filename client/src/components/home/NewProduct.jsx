@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { listProductBy } from "../../api/product"
-import ProductCard from "./../card/ProductCard"
+import ProductCard from "../card/ProductCard"
 import SwiperShowProduct from "../../utils/swiperShowProduct"
 
 // Import Swiper React components
@@ -12,7 +12,7 @@ import "swiper/css"
 import "swiper/css/navigation"
 import "swiper/css/pagination"
 
-const BestSeller = () => {
+const NewProduct = () => {
   const [data, setData] = useState([])
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const BestSeller = () => {
   }, [])
 
   const loadData = () => {
-    listProductBy("sold", "desc", 10)
+    listProductBy("updatedAt", "desc", 5)
       .then((res) => {
         // console.log(res.data)
         setData(res.data)
@@ -35,6 +35,7 @@ const BestSeller = () => {
       <p className="text-center text-2xl font-bold text-gray-800 mb-6 pb-2">
         สินค้าขายดี
       </p>
+
       <SwiperShowProduct>
         {data.map((item, index) => (
           <SwiperSlide>
@@ -46,4 +47,4 @@ const BestSeller = () => {
   )
 }
 
-export default BestSeller
+export default NewProduct
