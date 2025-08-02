@@ -1,10 +1,11 @@
 import React from "react"
+import ContentCarousel from "../components/home/ContentCarousel"
 
 const Home = () => {
   return (
-    <>
-      <h1 className="text-3xl font-bold underline">Home Page</h1>
-    </>
+    <div>
+      <ContentCarousel />
+    </div>
   )
 }
 
