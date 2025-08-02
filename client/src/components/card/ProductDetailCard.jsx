@@ -4,10 +4,10 @@ import { productDetail } from "../../api/product"
 import { numberFormat } from "./../../utils/number"
 import useEcomStore from "../../store/ecom-store"
 import { motion, AnimatePresence } from "framer-motion"
-import { ShoppingCart, Check } from "lucide-react"
-import { toast } from "react-toastify"
+import { ShoppingCart, Check } from 'lucide-react'
+import { toast } from "react-toastify" // อย่าลืม import toast ด้วย
 
-const ProductDetailCard = (item) => {
+const ProductDetailCard = () => {
   const { id } = useParams()
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -16,38 +16,35 @@ const ProductDetailCard = (item) => {
   const actionRemoveProduct = useEcomStore((s) => s.actionRemoveProduct)
   const carts = useEcomStore((s) => s.carts)
 
-
-  const inCart = carts.find((i) => i.id === item.id)
+  const inCart = carts.find((i) => i.id === product?.id)
 
   const handleAddToCart = () => {
-    actionAddToCart(item)
-    toast.success(`เพิ่ม “${item.title}” ลงในตะกร้าแล้ว`)
+    actionAddToCart(product)
+    toast.success(`เพิ่ม “${product.title}” ลงในตะกร้าแล้ว`)
   }
 
   const handleRemoveFromCart = () => {
-    actionRemoveProduct(item.id)
-    toast.warn(`ลบ “${item.title}” ออกจากตะกร้าแล้ว`)
+    actionRemoveProduct(product.id)
+    toast.warn(`ลบ “${product.title}” ออกจากตะกร้าแล้ว`)
   }
 
   useEffect(() => {
-    fetchData(id)
-  }, [])
-
-  const fetchData = async (id) => {
-    try {
-      const res = await productDetail(id)
-      console.log(res.data)
-      setProduct(res.data)
-    } catch (error) {
-      console.error("โหลดข้อมูลสินค้าไม่สำเร็จ:", error)
-    } finally {
-      setLoading(false)
+    const fetchData = async () => {
+      try {
+        const res = await productDetail(id)
+        setProduct(res.data)
+      } catch (error) {
+        console.error("โหลดข้อมูลสินค้าไม่สำเร็จ:", error)
+      } finally {
+        setLoading(false)
+      }
     }
-  }
+
+    fetchData()
+  }, [id])
 
   if (loading) return <div className="text-center py-20">กำลังโหลด...</div>
-  if (!product)
-    return <div className="text-center py-20">ไม่พบข้อมูลสินค้า</div>
+  if (!product) return <div className="text-center py-20">ไม่พบข้อมูลสินค้า</div>
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 flex flex-col md:flex-row gap-6">
@@ -77,14 +74,14 @@ const ProductDetailCard = (item) => {
 
         <div className="mt-4 flex justify-between items-center">
           <span className="text-green-600 font-bold text-lg">
-            {numberFormat(item.price)} ฿
+            {numberFormat(product.price)} ฿
           </span>
 
           {inCart ? (
             <button
               onClick={handleRemoveFromCart}
               className="relative p-2 bg-green-100 hover:bg-red-100 text-green-700 hover:text-red-600 rounded-full shadow-md transition"
-              title={`คลิกเพื่อลบสินค้า ออกจากตะกร้า`}
+              title="คลิกเพื่อลบสินค้าออกจากตะกร้า"
             >
               <Check size={18} />
               <AnimatePresence mode="wait">
