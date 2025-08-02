@@ -24,14 +24,14 @@ const ContentCarousel = () => {
     axios
       .get("https://picsum.photos/v2/list?page=1&limit=15")
       .then((res) => {
-        console.log(res.data)
+        // console.log(res.data)
         setData(res.data)
       })
       .catch((err) => console.log(err))
   }
 
   return (
-    <div className="w-full max-w-6xl mx-auto">
+    <div className="w-full max-w-6xl mx-auto justify-center">
       {/* Main Swiper - Large */}
       <Swiper
         spaceBetween={30}

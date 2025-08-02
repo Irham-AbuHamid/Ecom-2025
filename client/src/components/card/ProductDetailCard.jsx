@@ -1,15 +1,21 @@
-import React from "react"
-import { Link } from "react-router-dom"
-import { ShoppingCart, Check } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
-import { toast } from "react-toastify"
+import React, { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
+import { productDetail } from "../../api/product"
+import { numberFormat } from "./../../utils/number"
 import useEcomStore from "../../store/ecom-store"
-import { numberFormat } from "../../utils/number"
+import { motion, AnimatePresence } from "framer-motion"
+import { ShoppingCart, Check } from "lucide-react"
+import { toast } from "react-toastify"
 
-const ProductCard = ({ item }) => {
+const ProductDetailCard = (item) => {
+  const { id } = useParams()
+  const [product, setProduct] = useState(null)
+  const [loading, setLoading] = useState(true)
+
   const actionAddToCart = useEcomStore((s) => s.actionAddToCart)
   const actionRemoveProduct = useEcomStore((s) => s.actionRemoveProduct)
   const carts = useEcomStore((s) => s.carts)
+
 
   const inCart = carts.find((i) => i.id === item.id)
 
@@ -23,43 +29,52 @@ const ProductCard = ({ item }) => {
     toast.warn(`ลบ “${item.title}” ออกจากตะกร้าแล้ว`)
   }
 
+  useEffect(() => {
+    fetchData(id)
+  }, [])
+
+  const fetchData = async (id) => {
+    try {
+      const res = await productDetail(id)
+      console.log(res.data)
+      setProduct(res.data)
+    } catch (error) {
+      console.error("โหลดข้อมูลสินค้าไม่สำเร็จ:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loading) return <div className="text-center py-20">กำลังโหลด...</div>
+  if (!product)
+    return <div className="text-center py-20">ไม่พบข้อมูลสินค้า</div>
+
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      whileHover={{ scale: 1.015 }}
-      transition={{ duration: 0.2 }}
-      className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-200 overflow-hidden flex flex-col"
-    >
-      <div className="p-4 flex flex-col justify-between flex-1">
-        {/* รูปสินค้า */}
-        <Link to={`/product/${item.id}`} className="flex-1 flex flex-col">
-          <div className="relative">
-            {item.images?.[0]?.url ? (
-              <img
-                src={item.images[0].url}
-                alt={item.title}
-                className="w-full h-40 sm:h-48 object-contain "
-              />
-            ) : (
-              <div className="w-full h-40 sm:h-48 bg-gray-100 flex items-center justify-center text-sm text-gray-500">
-                No Image
-              </div>
-            )}
+    <div className="bg-white rounded-2xl shadow-lg p-6 flex flex-col md:flex-row gap-6">
+      {/* รูปสินค้า */}
+      <div className="w-full md:w-1/2">
+        {product.images?.[0]?.url ? (
+          <img
+            src={product.images[0].url}
+            alt={product.title}
+            className="w-full h-96 object-contain rounded-xl"
+          />
+        ) : (
+          <div className="w-full h-96 bg-gray-100 flex items-center justify-center text-gray-500">
+            ไม่มีรูป
           </div>
+        )}
+      </div>
 
-          {/* รายละเอียด */}
-          <div>
-            <p className="text-md font-semibold text-gray-800 truncate">
-              {item.title}
-            </p>
-            <p className="text-sm text-gray-500 mt-1 line-clamp-1">
-              {item.description}
-            </p>
-          </div>
-        </Link>
+      {/* รายละเอียดสินค้า */}
+      <div className="flex-1 flex flex-col justify-between">
+        <div>
+          <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
+          <p className="text-gray-700 text-lg mb-6 whitespace-pre-line">
+            {product.description}
+          </p>
+        </div>
 
-        {/* ราคา + ปุ่ม */}
         <div className="mt-4 flex justify-between items-center">
           <span className="text-green-600 font-bold text-lg">
             {numberFormat(item.price)} ฿
@@ -96,8 +111,8 @@ const ProductCard = ({ item }) => {
           )}
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }
 
-export default ProductCard
+export default ProductDetailCard

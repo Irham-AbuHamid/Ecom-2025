@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import useEcomStore from "./../../store/ecom-store"
-import { createProduct, readProduct, updateProduct } from "../../api/product"
+import { readProduct, updateProduct } from "../../api/product"
 import { toast } from "react-toastify"
 import UploadFile from "./UploadFile"
 import { useParams, useNavigate } from "react-router-dom"
