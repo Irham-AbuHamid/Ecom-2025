@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
 import { toast, ToastContainer } from "react-toastify"
@@ -24,6 +24,9 @@ const registerSchema = z
   })
 
 const Register = () => {
+  const [passwordScore, setPasswordScore] = useState(0)
+  const navigate = useNavigate()
+
   const {
     register,
     handleSubmit,
@@ -33,13 +36,14 @@ const Register = () => {
     resolver: zodResolver(registerSchema),
   })
 
-  const navigate = useNavigate()
-  const [form, setForm] = useState({
-    fullName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  })
+  const validatePassword = () => {
+    let password = watch().password
+    return zxcvbn(password ? password : "").score
+  }
+
+  useEffect(() => {
+    setPasswordScore(validatePassword())
+  }, [watch().password])
 
   const onSubmit = async (data) => {
     const passwordScore = zxcvbn(data.password).score
@@ -56,7 +60,6 @@ const Register = () => {
       toast.error(`❌ ${errMsg}`)
     }
   }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-blue-200 flex items-center justify-center px-4">
       <motion.div
@@ -74,6 +77,7 @@ const Register = () => {
           <div className="relative">
             <FiUser className="absolute top-3 left-3 text-gray-400" />
             <input
+              type="text"
               placeholder="Full Name"
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
               {...register("fullName")}
@@ -84,30 +88,51 @@ const Register = () => {
           <div className="relative">
             <FiMail className="absolute top-3 left-3 text-gray-400" />
             <input
+              type="email"
               placeholder="Email Address"
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
               {...register("email")}
             />
-          </div>
 
-          {errors.email && (
-            <div className="text-center mt-1 ml-2 text-sm text-red-600 bg-red-50 border border-red-300 rounded-xl px-3 py-1.5 shadow-sm animate-fade-in">
-              {errors.email.message}
-            </div>
-          )}
+            {errors.email && (
+              <div className="mx-1 text-sm text-red-500">
+                {errors.email.message}
+              </div>
+            )}
+          </div>
 
           {/* Password */}
           <div className="relative">
             <FiLock className="absolute top-3 left-3 text-gray-400" />
             <input
+              type="password"
               placeholder="Password"
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
               {...register("password")}
             />
+            {errors.password && (
+              <div className="mx-1 text-sm text-red-500">
+                {errors.password.message}
+              </div>
+            )}
           </div>
-          {errors.password && (
-            <div className="text-center mt-1 ml-2 text-sm text-red-600 bg-red-50 border border-red-300 rounded-xl px-3 py-1.5 shadow-sm animate-fade-in">
-              {errors.password.message}
+
+          {watch().password?.length > 0 && (
+            <div className="flex">
+              {Array.from(Array(5).keys()).map((item, index) => (
+                <span className="w-1/5 px-1" key={index}>
+                  <div
+                    className={`h-2 rounded-md
+                  ${
+                    passwordScore <= 2
+                      ? "bg-red-500"
+                      : passwordScore < 4
+                      ? "bg-yellow-500"
+                      : "bg-green-500"
+                  }`}
+                  ></div>
+                </span>
+              ))}
             </div>
           )}
 
@@ -115,16 +140,17 @@ const Register = () => {
           <div className="relative">
             <FiLock className="absolute top-3 left-3 text-gray-400" />
             <input
+              type="password"
               placeholder="Confirm Password"
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
               {...register("confirmPassword")}
             />
+            {errors.confirmPassword && (
+              <div className="mx-1 text-sm text-red-500">
+                {errors.confirmPassword.message}
+              </div>
+            )}
           </div>
-          {errors.confirmPassword && (
-            <div className="text-center mt-1 ml-2 text-sm text-red-600 bg-red-50 border border-red-300 rounded-xl px-3 py-1.5 shadow-sm animate-fade-in">
-              {errors.confirmPassword.message}
-            </div>
-          )}
 
           {/* Submit */}
           <button
