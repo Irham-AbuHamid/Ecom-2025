@@ -65,12 +65,11 @@ const ContentCarousel = () => {
       <div
         ref={paginationRef}
         className="custom-pagination 
-        flex justify-center gap-3 mb-4
+        flex justify-center mb-4
         px-2
-        sm:gap-3
-        md:gap-4
-        lg:gap-6
-        text-sm sm:text-base md:text-lg
+        sm:gap-2
+        md:gap-3
+        lg:gap-3
         "
       ></div>
 
