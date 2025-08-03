@@ -4,9 +4,35 @@ import { useNavigate } from "react-router-dom"
 import { toast, ToastContainer } from "react-toastify"
 import { motion } from "framer-motion"
 import { FiUser, FiMail, FiLock } from "react-icons/fi"
-import "react-toastify/dist/ReactToastify.css"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import zxcvbn from "zxcvbn"
+
+const registerSchema = z
+  .object({
+    fullName: z.string().min(1, { message: "กรุณากรอกชื่อ-นามสกุล" }),
+    email: z.email({ message: "กรุณากรอกอีเมลให้ถูกต้อง" }),
+    password: z
+      .string()
+      .min(8, { message: "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร" }),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "กรุณากรอกรหัสผ่านให้ตรงกัน",
+    path: ["confirmPassword"],
+  })
 
 const Register = () => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(registerSchema),
+  })
+
   const navigate = useNavigate()
   const [form, setForm] = useState({
     fullName: "",
@@ -15,20 +41,14 @@ const Register = () => {
     confirmPassword: "",
   })
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-
-    if (form.password !== form.confirmPassword) {
-      toast.error("❌ Passwords do not match!")
+  const onSubmit = async (data) => {
+    const passwordScore = zxcvbn(data.password).score
+    if (passwordScore < 3) {
+      toast.warning("รหัสผ่านมีความปลอดภัยต่ำ")
       return
     }
-
     try {
-      await axios.post("http://localhost:3000/api/register", form)
+      await axios.post("http://localhost:3000/api/register", data)
       toast.success("✅ Registered successfully!")
       setTimeout(() => navigate("/"), 3000)
     } catch (err) {
@@ -49,16 +69,14 @@ const Register = () => {
           Create an Account
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           {/* Full Name */}
           <div className="relative">
             <FiUser className="absolute top-3 left-3 text-gray-400" />
             <input
-              type="text"
-              name="fullName"
-              onChange={handleChange}
               placeholder="Full Name"
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              {...register("fullName")}
             />
           </div>
 
@@ -66,37 +84,47 @@ const Register = () => {
           <div className="relative">
             <FiMail className="absolute top-3 left-3 text-gray-400" />
             <input
-              type="email"
-              name="email"
-              onChange={handleChange}
               placeholder="Email Address"
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              {...register("email")}
             />
           </div>
+
+          {errors.email && (
+            <div className="text-center mt-1 ml-2 text-sm text-red-600 bg-red-50 border border-red-300 rounded-xl px-3 py-1.5 shadow-sm animate-fade-in">
+              {errors.email.message}
+            </div>
+          )}
 
           {/* Password */}
           <div className="relative">
             <FiLock className="absolute top-3 left-3 text-gray-400" />
             <input
-              type="password"
-              name="password"
-              onChange={handleChange}
               placeholder="Password"
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              {...register("password")}
             />
           </div>
+          {errors.password && (
+            <div className="text-center mt-1 ml-2 text-sm text-red-600 bg-red-50 border border-red-300 rounded-xl px-3 py-1.5 shadow-sm animate-fade-in">
+              {errors.password.message}
+            </div>
+          )}
 
           {/* Confirm Password */}
           <div className="relative">
             <FiLock className="absolute top-3 left-3 text-gray-400" />
             <input
-              type="password"
-              name="confirmPassword"
-              onChange={handleChange}
               placeholder="Confirm Password"
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              {...register("confirmPassword")}
             />
           </div>
+          {errors.confirmPassword && (
+            <div className="text-center mt-1 ml-2 text-sm text-red-600 bg-red-50 border border-red-300 rounded-xl px-3 py-1.5 shadow-sm animate-fade-in">
+              {errors.confirmPassword.message}
+            </div>
+          )}
 
           {/* Submit */}
           <button

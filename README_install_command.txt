@@ -47,6 +47,7 @@ npm i rc-slider
 npm i numeral
 npm install moment
 npm install framer-motion
+npm install react-hook-form zod @hookform/resolvers zxcvbn
 
 npm install react-dropzone @dnd-kit/core @dnd-kit/sortable @dnd-kit/modifiers @dnd-kit/utilities
 
