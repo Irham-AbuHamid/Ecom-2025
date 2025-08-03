@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom"
 import SidebarAdmin from "../components/admin/SidebarAdmin"
 import HeaderAdmin from "../components/admin/HeaderAdmin"
 import { Menu } from "lucide-react"
+import MainFooter from "../components/MainFooter"
 
 const LayoutAdmin = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -17,7 +18,10 @@ const LayoutAdmin = () => {
       {/* Sidebar: Mobile */}
       {isSidebarOpen && (
         <>
-          <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setIsSidebarOpen(false)} />
+          <div
+            className="fixed inset-0 bg-black/50 z-40"
+            onClick={() => setIsSidebarOpen(false)}
+          />
           <div className="fixed top-0 left-0 w-64 h-full bg-green-800 z-50 shadow-lg">
             <SidebarAdmin onClose={() => setIsSidebarOpen(false)} />
           </div>

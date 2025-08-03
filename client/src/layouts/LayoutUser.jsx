@@ -1,6 +1,7 @@
 import React from "react"
 import { Outlet } from "react-router-dom"
 import MainNav from "../components/MainNav"
+import MainFooter from "../components/MainFooter"
 
 const LayoutUser = () => {
   return (
@@ -15,10 +16,8 @@ const LayoutUser = () => {
         <Outlet />
       </main>
 
-      {/* Footer (Optional) */}
-      {/* <footer className="py-4 text-center text-sm text-gray-500">
-        © 2025 Your Shop. All rights reserved.
-      </footer> */}
+      {/* Footer */}
+      <MainFooter />
     </div>
   )
 }
