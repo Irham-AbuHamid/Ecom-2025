@@ -30,13 +30,15 @@ const NewProduct = () => {
         สินค้าไหม่ล่าสุด
       </p>
 
-      <SwiperShowProduct>
-        {data.map((item, index) => (
-          <SwiperSlide>
-            <ProductCard item={item} key={index} />
-          </SwiperSlide>
-        ))}
-      </SwiperShowProduct>
+      {data.length > 0 && (
+        <SwiperShowProduct>
+          {data.map((item, index) => (
+            <SwiperSlide key={index}>
+              <ProductCard item={item} />
+            </SwiperSlide>
+          ))}
+        </SwiperShowProduct>
+      )}
     </div>
   )
 }

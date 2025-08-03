@@ -34,13 +34,15 @@ const BestSeller = () => {
       <p className="text-center text-2xl font-bold text-gray-800 mb-6 pb-2">
         สินค้าขายดี
       </p>
-      <SwiperShowProduct>
-        {data.map((item, index) => (
-          <SwiperSlide>
-            <ProductCard item={item} key={index} />
-          </SwiperSlide>
-        ))}
-      </SwiperShowProduct>
+      {data.length > 0 && (
+        <SwiperShowProduct>
+          {data.map((item, index) => (
+            <SwiperSlide key={index}>
+              <ProductCard item={item} />
+            </SwiperSlide>
+          ))}
+        </SwiperShowProduct>
+      )}
     </div>
   )
 }
