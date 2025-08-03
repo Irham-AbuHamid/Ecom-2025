@@ -4,8 +4,7 @@ import ProductCard from "./../card/ProductCard"
 import SwiperShowProduct from "../../utils/swiperShowProduct"
 
 // Import Swiper React components
-import { Swiper, SwiperSlide } from "swiper/react"
-import { Autoplay, Navigation, Pagination } from "swiper/modules"
+import { SwiperSlide } from "swiper/react"
 
 // Import Swiper styles
 import "swiper/css"

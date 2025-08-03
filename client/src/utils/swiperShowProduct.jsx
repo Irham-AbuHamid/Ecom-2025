@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useRef } from "react"
-import axios from "axios"
+import React from "react"
 
 // Import Swiper React components
-import { Swiper, SwiperSlide } from "swiper/react"
+import { Swiper } from "swiper/react"
 
 // Import Swiper styles
 import "swiper/css"
@@ -10,11 +9,12 @@ import "swiper/css/navigation"
 import "swiper/css/pagination"
 
 // import required modules
-import { Autoplay, Pagination, Navigation } from "swiper/modules"
+import { Autoplay, Navigation } from "swiper/modules"
 
 const SwiperShowProduct = ({ children }) => {
   return (
     <div>
+      {/* BestSeller and NewProduct*/}
       <Swiper
         slidesPerView={1}
         spaceBetween={15}

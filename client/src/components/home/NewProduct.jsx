@@ -4,13 +4,7 @@ import ProductCard from "../card/ProductCard"
 import SwiperShowProduct from "../../utils/swiperShowProduct"
 
 // Import Swiper React components
-import { Swiper, SwiperSlide } from "swiper/react"
-import { Autoplay, Navigation, Pagination } from "swiper/modules"
-
-// Import Swiper styles
-import "swiper/css"
-import "swiper/css/navigation"
-import "swiper/css/pagination"
+import { SwiperSlide } from "swiper/react"
 
 const NewProduct = () => {
   const [data, setData] = useState([])
@@ -20,7 +14,7 @@ const NewProduct = () => {
   }, [])
 
   const loadData = () => {
-    listProductBy("updatedAt", "desc", 5)
+    listProductBy("updatedAt", "desc", 7)
       .then((res) => {
         // console.log(res.data)
         setData(res.data)
@@ -33,7 +27,7 @@ const NewProduct = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <p className="text-center text-2xl font-bold text-gray-800 mb-6 pb-2">
-        สินค้าขายดี
+        สินค้าไหม่ล่าสุด
       </p>
 
       <SwiperShowProduct>
