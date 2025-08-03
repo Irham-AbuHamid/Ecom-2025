@@ -64,7 +64,14 @@ const ContentCarousel = () => {
       {/* Pagination อยู่ "นอก" Swiper */}
       <div
         ref={paginationRef}
-        className="custom-pagination flex justify-center gap-3 mb-4"
+        className="custom-pagination 
+        flex justify-center gap-3 mb-4
+        px-2
+        sm:gap-3
+        md:gap-4
+        lg:gap-6
+        text-sm sm:text-base md:text-lg
+        "
       ></div>
 
       {/* Thumbnail Swiper - Small Carousel */}
